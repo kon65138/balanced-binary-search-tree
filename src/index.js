@@ -109,6 +109,24 @@ class Tree {
     }
     return node;
   }
+
+  find(value) {
+    if (this.array.indexOf(value) === -1) return null;
+    function recursiveFind(currentNode, Value) {
+      if (currentNode === null) {
+        return currentNode;
+      }
+      if (currentNode.data > Value) {
+        return recursiveFind(currentNode.left, Value);
+      } else if (currentNode.data < Value) {
+        return recursiveFind(currentNode.right, Value);
+      } else {
+        return currentNode;
+      }
+    }
+
+    return recursiveFind(this.root, value);
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -129,3 +147,4 @@ let ar = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 let ok = new Tree(ar);
 prettyPrint(ok.root);
 prettyPrint(ok.delete(10));
+console.log(ok.find(1));
