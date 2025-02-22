@@ -76,6 +76,39 @@ class Tree {
     }
     this.array[i] = item;
   }
+
+  delete(value) {
+    if (this.array.indexOf(value) === -1) return null;
+    function recursiveRemoveNode(currentNode, removeValue) {
+      if (currentNode === null) {
+        return currentNode;
+      }
+      if (currentNode.data > removeValue) {
+        currentNode.left = recursiveRemoveNode(currentNode.left, removeValue);
+      } else if (currentNode.data < removeValue) {
+        currentNode.right = recursiveRemoveNode(currentNode.right, removeValue);
+      } else {
+        if (currentNode.left === null) return currentNode.right;
+
+        if (currentNode.right === null) return currentNode.left;
+
+        let succ = this.getSuccessor(currentNode);
+        currentNode.data = succ.data;
+        currentNode.right = recursiveRemoveNode(currentNode.right, succ.data);
+      }
+      return currentNode;
+    }
+    this.array.splice(this.array.indexOf(value), 1);
+    return recursiveRemoveNode(this.root, value);
+  }
+
+  getSuccessor(node) {
+    node = node.right;
+    while (node !== null && node.left !== null) {
+      node = node.left;
+    }
+    return node;
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -91,12 +124,8 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 
-let ar = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+let ar = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 let ok = new Tree(ar);
-ok.insert(12);
-ok.insert(13);
-ok.insert(4.5);
-ok.insert(0.1);
-ok.insert(0.01);
 prettyPrint(ok.root);
+prettyPrint(ok.delete(10));
