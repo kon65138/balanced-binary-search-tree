@@ -1,3 +1,4 @@
+import { el } from 'date-fns/locale';
 import './style.css';
 
 class Node {
@@ -14,14 +15,31 @@ class Tree {
     this.root = this.buildTree(this.array);
   }
 
+  addAndSort2(arr, val) {
+    arr.push(val);
+    let i = arr.length - 1;
+    let item = arr[i];
+    while (i > 0 && item < arr[i - 1]) {
+      arr[i] = arr[i - 1];
+      i -= 1;
+    }
+    arr[i] = item;
+    return arr;
+  }
+
   buildTree(array) {
-    for (let i = 0; i < array.length; i++) {
+    let sortedArr = [];
+    array.forEach((element) => {
+      this.addAndSort2(sortedArr, element);
+    });
+
+    for (let i = 0; i < sortedArr.length; i++) {
       if (array[i] === array[i + 1]) {
         throw new Error('array cannot have duplicates');
       }
     }
     let start = 0;
-    let end = array.length - 1;
+    let end = sortedArr.length - 1;
 
     function recursiveBuildTree(array, start, end) {
       if (start > end) return null;
@@ -36,7 +54,7 @@ class Tree {
       return root;
     }
 
-    return recursiveBuildTree(array, start, end);
+    return recursiveBuildTree(sortedArr, start, end);
   }
 
   insert(value) {
@@ -272,48 +290,15 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 
-let ar = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
-function timesTwo(node) {
-  return (node.data *= 2);
+function randomNumArray(length = 16, numRange = 100) {
+  let array = [];
+  for (let i = 0; i < length; i++) {
+    array.push(Math.floor(Math.random() * numRange));
+  }
+  return array;
 }
 
+let ar = randomNumArray();
+
 let ok = new Tree(ar);
-console.log('this is default');
-prettyPrint(ok.root);
-
-ok.delete(10);
-console.log('this is after delteing 10');
-prettyPrint(ok.root);
-
-console.log(ok.find(1), 'ok.find(1) return');
-console.log('after finding 1');
-prettyPrint(ok.root);
-ok.levelOrder(timesTwo);
-console.log('after leveorder times two');
-prettyPrint(ok.root);
-ok.insert(11);
-console.log('after inserting 10');
-prettyPrint(ok.root);
-ok.preOrder(timesTwo);
-console.log('after timesTwo preOrder');
-prettyPrint(ok.root);
-ok.inOrder(timesTwo);
-console.log('after timesTwo inOrder');
-prettyPrint(ok.root);
-ok.postOrder(timesTwo);
-console.log('after timesTwo postOrder');
-prettyPrint(ok.root);
-ok.insert(13);
-ok.insert(12);
-prettyPrint(ok.root);
-console.log(ok.isBalanced());
-ok.delete(12);
-ok.insert(17);
-ok.insert(18);
-prettyPrint(ok.root);
-console.log(ok.isBalanced());
-console.log(ok.height(ok.root));
-console.log(ok.depth(ok.find(88)));
-ok.rebalance();
 prettyPrint(ok.root);
