@@ -11,7 +11,7 @@ class Node {
 class Tree {
   constructor(array) {
     this.array = array;
-    this.root = this.buildTree(array);
+    this.root = this.buildTree(this.array);
   }
 
   buildTree(array) {
@@ -40,41 +40,18 @@ class Tree {
   }
 
   insert(value) {
-    for (let i = 0; i < this.array.length; i++) {
-      if (this.array[i] === value) {
-        throw new Error('array cannot have duplicates');
-      }
-    }
-
     function recursiveInsertNode(currentNode, insertValue) {
-      if (currentNode.data > insertValue) {
-        if (currentNode.left === null) {
-          currentNode.left = new Node(insertValue);
-          return;
-        }
-        return recursiveInsertNode(currentNode.left, insertValue);
-      } else if (currentNode.data < insertValue) {
-        if (currentNode.right === null) {
-          currentNode.right = new Node(insertValue);
-          return;
-        }
-        return recursiveInsertNode(currentNode.right, insertValue);
+      if (currentNode === null) return new Node(insertValue);
+      if (currentNode.data === insertValue) throw new Error('no duplicates');
+      if (value < currentNode.data) {
+        currentNode.left = recursiveInsertNode(currentNode.left, insertValue);
+      } else if (value > currentNode.data) {
+        currentNode.right = recursiveInsertNode(currentNode.right, insertValue);
       }
+      return currentNode;
     }
 
-    recursiveInsertNode(this.root, value);
-    this.updateArray(value);
-  }
-
-  updateArray(val) {
-    this.array.push(val);
-    let i = this.array.length - 1;
-    let item = this.array[i];
-    while (i > 0 && item < this.array[i - 1]) {
-      this.array[i] = this.array[i - 1];
-      i -= 1;
-    }
-    this.array[i] = item;
+    this.root = recursiveInsertNode(this.root, value);
   }
 
   delete(value) {
@@ -98,8 +75,7 @@ class Tree {
       }
       return currentNode;
     }
-    this.array.splice(this.array.indexOf(value), 1);
-    return recursiveRemoveNode(this.root, value);
+    this.root = recursiveRemoveNode(this.root, value);
   }
 
   getSuccessor(node) {
@@ -111,7 +87,6 @@ class Tree {
   }
 
   find(value) {
-    if (this.array.indexOf(value) === -1) return null;
     function recursiveFind(currentNode, Value) {
       if (currentNode === null) {
         return currentNode;
@@ -126,6 +101,20 @@ class Tree {
     }
 
     return recursiveFind(this.root, value);
+  }
+
+  levelOrder(callback) {
+    if (this.root === null) return;
+    let queue = [];
+    queue.push(this.root);
+    this.root = queue[0];
+    while (queue.length > 0) {
+      let currentNode = queue[0];
+      callback(currentNode);
+      if (currentNode.left !== null) queue.push(currentNode.left);
+      if (currentNode.right !== null) queue.push(currentNode.right);
+      queue.shift();
+    }
   }
 }
 
@@ -144,7 +133,22 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 
 let ar = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
+function timesTwo(node) {
+  return (node.data *= 2);
+}
+
 let ok = new Tree(ar);
+console.log('this is default');
 prettyPrint(ok.root);
-prettyPrint(ok.delete(10));
-console.log(ok.find(1));
+ok.delete(10);
+console.log('this is after delteing 10');
+prettyPrint(ok.root);
+console.log(ok.find(1), 'ok.find(1) return');
+console.log('after finding 1');
+prettyPrint(ok.root);
+ok.levelOrder(timesTwo);
+console.log('after leveorder times two');
+prettyPrint(ok.root);
+ok.insert(11);
+console.log('after inserting 10');
+prettyPrint(ok.root);
