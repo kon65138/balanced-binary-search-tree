@@ -248,6 +248,15 @@ class Tree {
 
     return recDepthTraversal(this.root, this.height);
   }
+
+  rebalance() {
+    let array = [];
+    function addToArray(node) {
+      array.push(node.data);
+    }
+    this.inOrder(addToArray);
+    this.root = this.buildTree(array);
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -306,3 +315,5 @@ prettyPrint(ok.root);
 console.log(ok.isBalanced());
 console.log(ok.height(ok.root));
 console.log(ok.depth(ok.find(88)));
+ok.rebalance();
+prettyPrint(ok.root);
