@@ -178,7 +178,7 @@ class Tree {
   }
 
   height(node) {
-    if (node === null) return -1;
+    if (node === null) return null;
     let leafHeight = 0;
     function recDepthTraversal(currentNode, height = 0) {
       if (currentNode.left !== null) {
@@ -198,10 +198,31 @@ class Tree {
     return leafHeight;
   }
 
+  depth(node) {
+    if (node === null) return null;
+    function recursiveFind(currentNode, Value, depth = 0) {
+      if (currentNode === null) {
+        return currentNode;
+      }
+      if (currentNode.data > Value) {
+        return recursiveFind(currentNode.left, Value, (depth += 1));
+      } else if (currentNode.data < Value) {
+        return recursiveFind(currentNode.right, Value, (depth += 1));
+      } else {
+        return depth;
+      }
+    }
+
+    return recursiveFind(this.root, node.data);
+  }
+
   isBalanced() {
     function recDepthTraversal(currentNode, callback) {
       let leftHeight = callback(currentNode.left);
       let rightHeight = callback(currentNode.right);
+
+      if (leftHeight === null) leftHeight = -1;
+      if (rightHeight === null) rightHeight = -1;
 
       if (rightHeight > leftHeight) {
         if (rightHeight - leftHeight > 1) {
@@ -284,3 +305,4 @@ ok.insert(18);
 prettyPrint(ok.root);
 console.log(ok.isBalanced());
 console.log(ok.height(ok.root));
+console.log(ok.depth(ok.find(88)));
