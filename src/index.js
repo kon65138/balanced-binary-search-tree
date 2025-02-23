@@ -128,15 +128,57 @@ class Tree {
     function recPreOrderTraversal(currentNode, callback) {
       if (currentNode === null) return;
       callback(currentNode);
-      if (currentNode.left !== null)
+      if (currentNode.left !== null) {
         recPreOrderTraversal(currentNode.left, callback);
-      if (currentNode.right !== null)
+      }
+      if (currentNode.right !== null) {
         recPreOrderTraversal(currentNode.right, callback);
+      }
 
       return currentNode;
     }
 
     this.root = recPreOrderTraversal(this.root, callback);
+  }
+
+  inOrder(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('level order must be called with a fucntion');
+    }
+    if (this.root === null) return;
+    function recInOrderTraversal(currentNode, callback) {
+      if (currentNode === null) return;
+      if (currentNode.left !== null) {
+        recInOrderTraversal(currentNode.left, callback);
+      }
+      callback(currentNode);
+      if (currentNode.right !== null) {
+        recInOrderTraversal(currentNode.right, callback);
+      }
+      return currentNode;
+    }
+
+    this.root = recInOrderTraversal(this.root, callback);
+  }
+
+  postOrder(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('level order must be called with a fucntion');
+    }
+    if (this.root === null) return;
+    function recPostOrderTraversal(currentNode, callback) {
+      if (currentNode === null) return;
+      if (currentNode.left !== null) {
+        recPostOrderTraversal(currentNode.left, callback);
+      }
+      if (currentNode.right !== null) {
+        recPostOrderTraversal(currentNode.right, callback);
+      }
+      callback(currentNode);
+      return currentNode;
+    }
+
+    this.root = recPostOrderTraversal(this.root, callback);
   }
 }
 
@@ -176,4 +218,10 @@ console.log('after inserting 10');
 prettyPrint(ok.root);
 ok.preOrder(timesTwo);
 console.log('after timesTwo preOrder');
+prettyPrint(ok.root);
+ok.inOrder(timesTwo);
+console.log('after timesTwo inOrder');
+prettyPrint(ok.root);
+ok.postOrder(timesTwo);
+console.log('after timesTwo postOrder');
 prettyPrint(ok.root);
