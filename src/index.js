@@ -104,6 +104,9 @@ class Tree {
   }
 
   levelOrder(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('level order must be called with a fucntion');
+    }
     if (this.root === null) return;
     let queue = [];
     queue.push(this.root);
@@ -115,6 +118,25 @@ class Tree {
       if (currentNode.right !== null) queue.push(currentNode.right);
       queue.shift();
     }
+  }
+
+  preOrder(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('level order must be called with a fucntion');
+    }
+    if (this.root === null) return;
+    function recPreOrderTraversal(currentNode, callback) {
+      if (currentNode === null) return;
+      callback(currentNode);
+      if (currentNode.left !== null)
+        recPreOrderTraversal(currentNode.left, callback);
+      if (currentNode.right !== null)
+        recPreOrderTraversal(currentNode.right, callback);
+
+      return currentNode;
+    }
+
+    this.root = recPreOrderTraversal(this.root, callback);
   }
 }
 
@@ -151,4 +173,7 @@ console.log('after leveorder times two');
 prettyPrint(ok.root);
 ok.insert(11);
 console.log('after inserting 10');
+prettyPrint(ok.root);
+ok.preOrder(timesTwo);
+console.log('after timesTwo preOrder');
 prettyPrint(ok.root);
