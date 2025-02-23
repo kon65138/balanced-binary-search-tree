@@ -126,7 +126,6 @@ class Tree {
     }
     if (this.root === null) return;
     function recPreOrderTraversal(currentNode, callback) {
-      if (currentNode === null) return;
       callback(currentNode);
       if (currentNode.left !== null) {
         recPreOrderTraversal(currentNode.left, callback);
@@ -147,7 +146,6 @@ class Tree {
     }
     if (this.root === null) return;
     function recInOrderTraversal(currentNode, callback) {
-      if (currentNode === null) return;
       if (currentNode.left !== null) {
         recInOrderTraversal(currentNode.left, callback);
       }
@@ -167,7 +165,6 @@ class Tree {
     }
     if (this.root === null) return;
     function recPostOrderTraversal(currentNode, callback) {
-      if (currentNode === null) return;
       if (currentNode.left !== null) {
         recPostOrderTraversal(currentNode.left, callback);
       }
@@ -179,6 +176,26 @@ class Tree {
     }
 
     this.root = recPostOrderTraversal(this.root, callback);
+  }
+
+  height() {
+    let leafHeight = 0;
+    function recDepthTraversal(currentNode, height = 0) {
+      if (currentNode.left !== null) {
+        recDepthTraversal(currentNode.left, (height += 1));
+        height -= 1;
+      }
+      if (currentNode.right !== null) {
+        recDepthTraversal(currentNode.right, (height += 1));
+        height -= 1;
+      }
+
+      if (height > leafHeight) leafHeight = height;
+      return;
+    }
+
+    recDepthTraversal(this.root);
+    return leafHeight;
   }
 }
 
@@ -225,3 +242,10 @@ prettyPrint(ok.root);
 ok.postOrder(timesTwo);
 console.log('after timesTwo postOrder');
 prettyPrint(ok.root);
+console.log(ok.height());
+ok.insert(13);
+ok.insert(12);
+ok.insert(11);
+ok.insert(10);
+prettyPrint(ok.root);
+console.log(ok.height());
