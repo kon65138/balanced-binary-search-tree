@@ -55,7 +55,6 @@ class Tree {
   }
 
   delete(value) {
-    if (this.array.indexOf(value) === -1) return null;
     function recursiveRemoveNode(currentNode, removeValue) {
       if (currentNode === null) {
         return currentNode;
@@ -178,7 +177,8 @@ class Tree {
     this.root = recPostOrderTraversal(this.root, callback);
   }
 
-  height() {
+  height(node) {
+    if (node === null) return -1;
     let leafHeight = 0;
     function recDepthTraversal(currentNode, height = 0) {
       if (currentNode.left !== null) {
@@ -194,8 +194,38 @@ class Tree {
       return;
     }
 
-    recDepthTraversal(this.root);
+    recDepthTraversal(node);
     return leafHeight;
+  }
+
+  isBalanced() {
+    function recDepthTraversal(currentNode, callback) {
+      let leftHeight = callback(currentNode.left);
+      let rightHeight = callback(currentNode.right);
+
+      if (rightHeight > leftHeight) {
+        if (rightHeight - leftHeight > 1) {
+          return false;
+        }
+      } else {
+        if (leftHeight - rightHeight > 1) {
+          return false;
+        }
+      }
+      if (currentNode.left !== null) {
+        if (recDepthTraversal(currentNode.left, callback) === false) {
+          return false;
+        }
+      }
+      if (currentNode.right !== null) {
+        if (recDepthTraversal(currentNode.right, callback) === false) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    return recDepthTraversal(this.root, this.height);
   }
 }
 
@@ -221,9 +251,11 @@ function timesTwo(node) {
 let ok = new Tree(ar);
 console.log('this is default');
 prettyPrint(ok.root);
+
 ok.delete(10);
 console.log('this is after delteing 10');
 prettyPrint(ok.root);
+
 console.log(ok.find(1), 'ok.find(1) return');
 console.log('after finding 1');
 prettyPrint(ok.root);
@@ -242,10 +274,13 @@ prettyPrint(ok.root);
 ok.postOrder(timesTwo);
 console.log('after timesTwo postOrder');
 prettyPrint(ok.root);
-console.log(ok.height());
 ok.insert(13);
 ok.insert(12);
-ok.insert(11);
-ok.insert(10);
 prettyPrint(ok.root);
-console.log(ok.height());
+console.log(ok.isBalanced());
+ok.delete(12);
+ok.insert(17);
+ok.insert(18);
+prettyPrint(ok.root);
+console.log(ok.isBalanced());
+console.log(ok.height(ok.root));
