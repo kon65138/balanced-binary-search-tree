@@ -1,4 +1,3 @@
-import { el } from 'date-fns/locale';
 import './style.css';
 
 class Node {
@@ -34,7 +33,7 @@ class Tree {
     });
 
     for (let i = 0; i < sortedArr.length; i++) {
-      if (array[i] === array[i + 1]) {
+      if (sortedArr[i] === sortedArr[i + 1]) {
         throw new Error('array cannot have duplicates');
       }
     }
@@ -273,6 +272,7 @@ class Tree {
       array.push(node.data);
     }
     this.inOrder(addToArray);
+    console.log(array);
     this.root = this.buildTree(array);
   }
 }
@@ -290,15 +290,35 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   }
 };
 
-function randomNumArray(length = 16, numRange = 100) {
+function randomNumArrayNoDuplicates(length = 16, numRange = 100) {
   let array = [];
   for (let i = 0; i < length; i++) {
-    array.push(Math.floor(Math.random() * numRange));
+    let num = Math.floor(Math.random() * numRange);
+    if (!array.includes(num)) array.push(num);
   }
   return array;
 }
 
-let ar = randomNumArray();
+function printElement(node) {
+  console.log(node.data);
+}
+
+let ar = randomNumArrayNoDuplicates();
 
 let ok = new Tree(ar);
 prettyPrint(ok.root);
+console.log(ok.isBalanced());
+ok.insert(108);
+prettyPrint(ok.root);
+console.log(ok.isBalanced());
+ok.rebalance();
+prettyPrint(ok.root);
+console.log(ok.isBalanced());
+console.log('LEVEL ORDER BELOW');
+ok.levelOrder(printElement);
+console.log('PRE ORDER BELOW');
+ok.preOrder(printElement);
+console.log('IN ORDER BELOW');
+ok.inOrder(printElement);
+console.log('POST ORDER BELOW');
+ok.postOrder(printElement);
